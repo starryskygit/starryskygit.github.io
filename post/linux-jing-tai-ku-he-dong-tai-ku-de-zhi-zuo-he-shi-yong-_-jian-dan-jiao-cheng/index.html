@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Linux 静态库和动态库的制作和使用_简单教程 | 未名的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://starryskygit.github.io/favicon.ico?v=1723309909957">
+<link rel="stylesheet" href="https://starryskygit.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="在 Linux 中程序首选寻找库的路径在 /lib 或 /usr/lib 下
+1、静态库
+
+一般以.a结尾，如libtest.a
+编译时：库函数被合并在可执行文件中
+执行时：提供可执行文件即可
+可执行文件会变大，适合于小程序调用
+
+静态库的..." />
+    <meta name="keywords" content="动态库,静态库,Linux,C" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://starryskygit.github.io">
+        <img src="https://starryskygit.github.io/images/avatar.png?v=1723309909957" class="site-logo">
+        <h1 class="site-title">未名的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://starryskygit.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Linux 静态库和动态库的制作和使用_简单教程</h2>
+            <div class="post-date">2024-06-19</div>
+            
+              <div class="feature-container" style="background-image: url('https://starryskygit.github.io/post-images/linux-jing-tai-ku-he-dong-tai-ku-de-zhi-zuo-he-shi-yong-_-jian-dan-jiao-cheng.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>在 Linux 中程序首选寻找库的路径在 <code>/lib</code> 或 <code>/usr/lib</code> 下</p>
+<h2 id="1-静态库">1、静态库</h2>
+<ul>
+<li>一般以<code>.a</code>结尾，如<code>libtest.a</code></li>
+<li>编译时：库函数被合并在可执行文件中</li>
+<li>执行时：提供可执行文件即可</li>
+<li>可执行文件会变大，适合于小程序调用</li>
+</ul>
+<h3 id="静态库的制作">静态库的制作</h3>
+<ul>
+<li><strong>不管是静态库还是动态库都是由</strong> <code>.o</code> 文件去生成的</li>
+</ul>
+<p><strong>示例：</strong></p>
+<p>库函数头文件 <code>myprintf.h</code></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void myprintf_fun(char str[]);
+</code></pre>
+<p>库函数实现 <code>myprintf.c</code></p>
+<pre><code class="language-c">#include &lt;myprintf.h&gt;
+
+void myprintf_fun(char str[])
+{
+	printf(&quot;this is myprintf_fun :%s\n&quot;, str);
+}
+</code></pre>
+<p>引用文件 <code>main.c</code></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;myprintf.h&quot;
+
+int main()
+{
+	printf(&quot;this is main fun\n&quot;);
+	char s[] = &quot;test msg.&quot;;
+	myprintf_fun(s);
+	return 0;
+}
+</code></pre>
+<p>目录结构</p>
+<pre><code class="language-bash">~/Desktop/libtest$ tree
+.
+├── main.c
+├── myprintf.c
+└── myprintf.h
+
+0 directories, 3 files
+</code></pre>
+<p><strong>制作和使用方法：</strong></p>
+<ol>
+<li>将库函数编译为 <code>.o</code> 文件</li>
+</ol>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -o myprintf.o -c myprintf.c
+myprintf.c:1:22: fatal error: myprintf.h: 没有那个文件或目录
+compilation terminated.
+~/Desktop/libtest$ gcc -o myprintf.o -c myprintf.c -I./ # -I 是找库函数的头文件
+~/Desktop/libtest$ ls
+main.c  myprintf.c  myprintf.h  myprintf.o # 生成的 .o 文件
+</code></pre>
+<ol start="2">
+<li>将 <code>.o</code> 文件生成 <code>.a</code> 的静态库文件, 用 <code>ar -rcs</code> 命令</li>
+</ol>
+<pre><code class="language-bash"># libmyprintf.a 中 lib为前缀 后接库名字myprintf 最后的 .a 是静态库文件类型
+~/Desktop/libtest$ ar -rcs libmyprintf.a myprintf.o 
+~/Desktop/libtest$ ls
+libmyprintf.a  main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ 
+</code></pre>
+<p>说明：</p>
+<pre><code>-r 替换
+-c 创建一个库
+-s 更新库符号表
+</code></pre>
+<ol start="3">
+<li>使用方法</li>
+</ol>
+<p><code>-l库名</code></p>
+<p>第一种：编译时通过 <code>-L+库路径</code> 指定库的路径</p>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -o main1  main.c -lmyprintf -L./
+~/Desktop/libtest$ ls
+libmyprintf.a  main1  main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ ./main1 
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$
+</code></pre>
+<p>第二种：将 <code>.a</code> 文件复制到 <code>/lib</code> 或 <code>/usr/lib</code> 目录下</p>
+<pre><code class="language-bash">~/Desktop/libtest$ sudo cp ./libmyprintf.a /usr/lib # 拷到系统库路径里
+[sudo] zcy 的密码： 
+~/Desktop/libtest$ ls /usr/lib/libmyprintf.a 
+/usr/lib/libmyprintf.a
+~/Desktop/libtest$ gcc -o main2  main.c -lmyprintf 
+~/Desktop/libtest$ ./main2
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$ 
+</code></pre>
+<h2 id="2-动态库共享库">2、动态库（共享库）</h2>
+<ul>
+<li>一般以<code>.so</code>或<code>.so.x</code>结尾，x代表版本，如<code>libtest.so.1</code></li>
+<li>编译时：库文件不被合并入可执行文件</li>
+<li>执行时：提供可执行文件和库文件才能执行</li>
+<li>可执行文件会比较小，并且几个可执行文件可以共享库，适合于大型项目。</li>
+</ul>
+<p>同样制作库文件和的源文件与上面静态库的一样，目录结构一样</p>
+<pre><code class="language-bash">:~/Desktop/libtest$ tree
+.
+├── main.c
+├── myprintf.c
+└── myprintf.h
+
+0 directories, 3 files
+</code></pre>
+<p><strong>制作和使用方法：</strong></p>
+<ol>
+<li>将库函数编译为 <code>.o</code> 文件 ，这里注意与静态库区别，要加 <code>-fPIC</code> 选项</li>
+</ol>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -o myprintf.o -c myprintf.c -fPIC -I./ # -I 是找库函数的头文件
+~/Desktop/libtest$ ls
+main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ 
+</code></pre>
+<ol start="2">
+<li>将 <code>.o</code> 文件生成 <code>.so</code> 的动态库文件, 用 <code>gcc-shared</code> 命令</li>
+</ol>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -shared -o libmyshared.so  myprintf.o
+~/Desktop/libtest$ ls
+libmyshared.so  main.c  myprintf.c  myprintf.h  myprintf.o
+</code></pre>
+<ol start="3">
+<li>使用方法</li>
+</ol>
+<p>编译时要指定库文件路径</p>
+<pre><code class="language-bash">~/Desktop/libtest$ ls
+libmyshared.so  main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ gcc -o shared_mian main.c -lmyshared -L./ # 编译正常
+~/Desktop/libtest$ ./shared_mian  #运行提示没有找到，这是因为共享库是程序运行时加载的
+./shared_mian: error while loading shared libraries: libmyshared.so: cannot open shared object file: No such file or directory
+~/Desktop/libtest$ ldd shared_mian 
+	linux-vdso.so.1 =&gt;  (0x00007ffdaf1c2000)
+	libmyshared.so =&gt; not found # 可以看到程序没有找到
+	libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fbab6a64000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fbab6e2e000)
+~/Desktop/libtest$ 
+</code></pre>
+<p>要运行动态库编译的文件处理方法有两种：</p>
+<p>第一种：将动态库<code>.so</code> 添加到系统库路径中 （<code>/lib 或 /usr/lib</code>）</p>
+<pre><code class="language-bash">:~/Desktop/libtest$ sudo cp ./libmyshared.so /usr/lib # 添加到系统库路径中
+[sudo] zcy 的密码： 
+~/Desktop/libtest$ ls /usr/lib/libmyshared.so 
+/usr/lib/libmyshared.so
+~/Desktop/libtest$ ./shared_mian 
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$ ldd shared_mian 
+	linux-vdso.so.1 =&gt;  (0x00007ffcdc9e3000)
+	libmyshared.so =&gt; /usr/lib/libmyshared.so (0x00007f81b2415000) # 可以看到找到了
+	libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f81b204b000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f81b2617000)
+~/Desktop/libtest$ 
+</code></pre>
+<p>第二种：将动态库<code>.so</code> 的路径配置到系统配置文件中 （<code>d</code>）</p>
+<pre><code class="language-bash">~/Desktop/libtest$ ls
+libmyshared.so  main.c  myprintf.c  myprintf.h  myprintf.o  shared_mian
+~/Desktop/libtest$ pwd # 当前库的路径
+/home/zcy/Desktop/libtest
+# 在系统配置 /etc/ld.so.conf.d/ 目录下添加 一个文件 mylib.conf （文件名自己随便取）
+# 然后 mylib.conf 文件中写刚才编译的共享库的路径 /home/zcy/Desktop/libtest
+~/Desktop/libtest$ sudo vim /etc/ld.so.conf.d/mylib.conf
+~/Desktop/libtest$ sync
+~/Desktop/libtest$ cat /etc/ld.so.conf.d/mylib.conf # 添加的配置文件内容
+/home/zcy/Desktop/libtest
+~/Desktop/libtest$ sudo ldconfig # ！！！配置后需重新加载一下系统配置
+~/Desktop/libtest$ ./shared_mian 
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$ ldd shared_mian # 可以看到库路径是我们刚才配置的
+	linux-vdso.so.1 =&gt;  (0x00007ffff7996000)
+	libmyshared.so =&gt; /home/zcy/Desktop/libtest/libmyshared.so (0x00007f16fb848000)
+	libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f16fb47e000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f16fba4a000)
+~/Desktop/libtest$ 
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://starryskygit.github.io/tag/IKH_65UIm/" class="tag">
+                    动态库
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/QuTeN00-fE/" class="tag">
+                    静态库
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/KNJNua1m16/" class="tag">
+                    Linux
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/lZOEbwkZTx/" class="tag">
+                    C
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://starryskygit.github.io/post/windows10-guan-bi-kuai-su-fang-wen-shan-chu-li-shi-ji-lu/">
+                  <h3 class="post-title">
+                    Windows10 关闭快速访问删除历史纪录
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

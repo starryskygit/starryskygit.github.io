@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://starryskygit.github.io</id>
+    <title>未名的博客</title>
+    <updated>2024-08-10T17:11:56.272Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://starryskygit.github.io"/>
+    <link rel="self" href="https://starryskygit.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://starryskygit.github.io/images/avatar.png</logo>
+    <icon>https://starryskygit.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, 未名的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Qt国际化-中英文切换]]></title>
+        <id>https://starryskygit.github.io/post/qt-guo-ji-hua-zhong-ying-wen-qie-huan/</id>
+        <link href="https://starryskygit.github.io/post/qt-guo-ji-hua-zhong-ying-wen-qie-huan/">
+        </link>
+        <updated>2024-06-30T08:55:51.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>
+<p>将需要翻译的地方的字符串用 <code>tr()</code> 方法进行设置</p>
+</li>
+<li>
+<p><code>pro</code>文件中添加 ，添加如下语句。这条语句是为了生成两个.ts文件</p>
+</li>
+</ol>
+<p><code>TRANSLATIONS = English.ts Chinese.ts</code>  //文件名字自己随便取</p>
+<ol start="3">
+<li>通过“Qt语言家”工具生成 第二步设置的 <code>.ts</code> 文件名字自己随便取</li>
+</ol>
+<p>具体方法点击<strong>QtCreator工具栏</strong>中依次步骤如下：</p>
+<p>&quot;工具&quot;-&gt;&quot;外部&quot;-&gt;&quot;Qt语言家&quot;-&gt;&quot;更新翻译(lupdate)&quot;</p>
+<p>操作完后<strong>会在项目文件夹中生成对应的ts文件</strong></p>
+<ol start="4">
+<li>打开 Linguist 工具（win10在侧边栏可以搜索得到），然后用 Linguist 工具打开刚才生成的ts文件，对需要翻译的地方进行翻译（tr()方法设置的字符串）</li>
+</ol>
+<p>设置好翻译后 保存 ，然后 发布，发布后会在<code>.ts</code>文件的路径下生成<code>.qm</code>文件。</p>
+<figure data-type="image" tabindex="1"><img src="https://starryskygit.github.io/post-images/1719738124934.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://starryskygit.github.io/post-images/1719738134579.png" alt="" loading="lazy"></figure>
+<ol start="5">
+<li>发布后，我们就生成了两个.qm文件了，将qm文件添加到项目资源文件中（添加方法跟添加图片类似）</li>
+</ol>
+<figure data-type="image" tabindex="3"><img src="https://starryskygit.github.io/post-images/1719738147300.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://starryskygit.github.io/post-images/1719738154380.png" alt="" loading="lazy"></figure>
+<ol start="6">
+<li>最后在需要引用的地方，调用资源文件.qm 进行翻译的切换。</li>
+</ol>
+<pre><code class="language-cpp">    QTranslator tl;//加载翻译文件的类
+
+    connect(EnglishPb, &amp;QAction::triggered,this,[=]()
+    {
+        tl.load(&quot;:/English.qm&quot;); //点击按钮后加载翻译文件
+        qApp-&gt;installTranslator(&amp;tl);
+        qDebug()&lt;&lt;&quot;English&quot;;
+
+    });
+    connect(ChinesePb, &amp;QAction::triggered,this,[=]()
+    {
+        tl.load(&quot;:/Chinese.qm&quot;);
+        qApp-&gt;installTranslator(&amp;tl);
+        qDebug()&lt;&lt;&quot;Chinese&quot;;
+
+    });
+</code></pre>
+<p>注：每次更新了tr()中的字符串都要更新一次qm文件。</p>
+<p>具体操作可参考：<br>
+https://blog.csdn.net/weixin_52764460/article/details/119040216</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Linux 静态库和动态库的制作和使用_简单教程]]></title>
+        <id>https://starryskygit.github.io/post/linux-jing-tai-ku-he-dong-tai-ku-de-zhi-zuo-he-shi-yong-_-jian-dan-jiao-cheng/</id>
+        <link href="https://starryskygit.github.io/post/linux-jing-tai-ku-he-dong-tai-ku-de-zhi-zuo-he-shi-yong-_-jian-dan-jiao-cheng/">
+        </link>
+        <updated>2024-06-19T15:57:24.000Z</updated>
+        <content type="html"><![CDATA[<p>在 Linux 中程序首选寻找库的路径在 <code>/lib</code> 或 <code>/usr/lib</code> 下</p>
+<h2 id="1-静态库">1、静态库</h2>
+<ul>
+<li>一般以<code>.a</code>结尾，如<code>libtest.a</code></li>
+<li>编译时：库函数被合并在可执行文件中</li>
+<li>执行时：提供可执行文件即可</li>
+<li>可执行文件会变大，适合于小程序调用</li>
+</ul>
+<h3 id="静态库的制作">静态库的制作</h3>
+<ul>
+<li><strong>不管是静态库还是动态库都是由</strong> <code>.o</code> 文件去生成的</li>
+</ul>
+<p><strong>示例：</strong></p>
+<p>库函数头文件 <code>myprintf.h</code></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void myprintf_fun(char str[]);
+</code></pre>
+<p>库函数实现 <code>myprintf.c</code></p>
+<pre><code class="language-c">#include &lt;myprintf.h&gt;
+
+void myprintf_fun(char str[])
+{
+	printf(&quot;this is myprintf_fun :%s\n&quot;, str);
+}
+</code></pre>
+<p>引用文件 <code>main.c</code></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;myprintf.h&quot;
+
+int main()
+{
+	printf(&quot;this is main fun\n&quot;);
+	char s[] = &quot;test msg.&quot;;
+	myprintf_fun(s);
+	return 0;
+}
+</code></pre>
+<p>目录结构</p>
+<pre><code class="language-bash">~/Desktop/libtest$ tree
+.
+├── main.c
+├── myprintf.c
+└── myprintf.h
+
+0 directories, 3 files
+</code></pre>
+<p><strong>制作和使用方法：</strong></p>
+<ol>
+<li>将库函数编译为 <code>.o</code> 文件</li>
+</ol>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -o myprintf.o -c myprintf.c
+myprintf.c:1:22: fatal error: myprintf.h: 没有那个文件或目录
+compilation terminated.
+~/Desktop/libtest$ gcc -o myprintf.o -c myprintf.c -I./ # -I 是找库函数的头文件
+~/Desktop/libtest$ ls
+main.c  myprintf.c  myprintf.h  myprintf.o # 生成的 .o 文件
+</code></pre>
+<ol start="2">
+<li>将 <code>.o</code> 文件生成 <code>.a</code> 的静态库文件, 用 <code>ar -rcs</code> 命令</li>
+</ol>
+<pre><code class="language-bash"># libmyprintf.a 中 lib为前缀 后接库名字myprintf 最后的 .a 是静态库文件类型
+~/Desktop/libtest$ ar -rcs libmyprintf.a myprintf.o 
+~/Desktop/libtest$ ls
+libmyprintf.a  main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ 
+</code></pre>
+<p>说明：</p>
+<pre><code>-r 替换
+-c 创建一个库
+-s 更新库符号表
+</code></pre>
+<ol start="3">
+<li>使用方法</li>
+</ol>
+<p><code>-l库名</code></p>
+<p>第一种：编译时通过 <code>-L+库路径</code> 指定库的路径</p>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -o main1  main.c -lmyprintf -L./
+~/Desktop/libtest$ ls
+libmyprintf.a  main1  main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ ./main1 
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$
+</code></pre>
+<p>第二种：将 <code>.a</code> 文件复制到 <code>/lib</code> 或 <code>/usr/lib</code> 目录下</p>
+<pre><code class="language-bash">~/Desktop/libtest$ sudo cp ./libmyprintf.a /usr/lib # 拷到系统库路径里
+[sudo] zcy 的密码： 
+~/Desktop/libtest$ ls /usr/lib/libmyprintf.a 
+/usr/lib/libmyprintf.a
+~/Desktop/libtest$ gcc -o main2  main.c -lmyprintf 
+~/Desktop/libtest$ ./main2
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$ 
+</code></pre>
+<h2 id="2-动态库共享库">2、动态库（共享库）</h2>
+<ul>
+<li>一般以<code>.so</code>或<code>.so.x</code>结尾，x代表版本，如<code>libtest.so.1</code></li>
+<li>编译时：库文件不被合并入可执行文件</li>
+<li>执行时：提供可执行文件和库文件才能执行</li>
+<li>可执行文件会比较小，并且几个可执行文件可以共享库，适合于大型项目。</li>
+</ul>
+<p>同样制作库文件和的源文件与上面静态库的一样，目录结构一样</p>
+<pre><code class="language-bash">:~/Desktop/libtest$ tree
+.
+├── main.c
+├── myprintf.c
+└── myprintf.h
+
+0 directories, 3 files
+</code></pre>
+<p><strong>制作和使用方法：</strong></p>
+<ol>
+<li>将库函数编译为 <code>.o</code> 文件 ，这里注意与静态库区别，要加 <code>-fPIC</code> 选项</li>
+</ol>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -o myprintf.o -c myprintf.c -fPIC -I./ # -I 是找库函数的头文件
+~/Desktop/libtest$ ls
+main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ 
+</code></pre>
+<ol start="2">
+<li>将 <code>.o</code> 文件生成 <code>.so</code> 的动态库文件, 用 <code>gcc-shared</code> 命令</li>
+</ol>
+<pre><code class="language-bash">~/Desktop/libtest$ gcc -shared -o libmyshared.so  myprintf.o
+~/Desktop/libtest$ ls
+libmyshared.so  main.c  myprintf.c  myprintf.h  myprintf.o
+</code></pre>
+<ol start="3">
+<li>使用方法</li>
+</ol>
+<p>编译时要指定库文件路径</p>
+<pre><code class="language-bash">~/Desktop/libtest$ ls
+libmyshared.so  main.c  myprintf.c  myprintf.h  myprintf.o
+~/Desktop/libtest$ gcc -o shared_mian main.c -lmyshared -L./ # 编译正常
+~/Desktop/libtest$ ./shared_mian  #运行提示没有找到，这是因为共享库是程序运行时加载的
+./shared_mian: error while loading shared libraries: libmyshared.so: cannot open shared object file: No such file or directory
+~/Desktop/libtest$ ldd shared_mian 
+	linux-vdso.so.1 =&gt;  (0x00007ffdaf1c2000)
+	libmyshared.so =&gt; not found # 可以看到程序没有找到
+	libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fbab6a64000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fbab6e2e000)
+~/Desktop/libtest$ 
+</code></pre>
+<p>要运行动态库编译的文件处理方法有两种：</p>
+<p>第一种：将动态库<code>.so</code> 添加到系统库路径中 （<code>/lib 或 /usr/lib</code>）</p>
+<pre><code class="language-bash">:~/Desktop/libtest$ sudo cp ./libmyshared.so /usr/lib # 添加到系统库路径中
+[sudo] zcy 的密码： 
+~/Desktop/libtest$ ls /usr/lib/libmyshared.so 
+/usr/lib/libmyshared.so
+~/Desktop/libtest$ ./shared_mian 
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$ ldd shared_mian 
+	linux-vdso.so.1 =&gt;  (0x00007ffcdc9e3000)
+	libmyshared.so =&gt; /usr/lib/libmyshared.so (0x00007f81b2415000) # 可以看到找到了
+	libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f81b204b000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f81b2617000)
+~/Desktop/libtest$ 
+</code></pre>
+<p>第二种：将动态库<code>.so</code> 的路径配置到系统配置文件中 （<code>d</code>）</p>
+<pre><code class="language-bash">~/Desktop/libtest$ ls
+libmyshared.so  main.c  myprintf.c  myprintf.h  myprintf.o  shared_mian
+~/Desktop/libtest$ pwd # 当前库的路径
+/home/zcy/Desktop/libtest
+# 在系统配置 /etc/ld.so.conf.d/ 目录下添加 一个文件 mylib.conf （文件名自己随便取）
+# 然后 mylib.conf 文件中写刚才编译的共享库的路径 /home/zcy/Desktop/libtest
+~/Desktop/libtest$ sudo vim /etc/ld.so.conf.d/mylib.conf
+~/Desktop/libtest$ sync
+~/Desktop/libtest$ cat /etc/ld.so.conf.d/mylib.conf # 添加的配置文件内容
+/home/zcy/Desktop/libtest
+~/Desktop/libtest$ sudo ldconfig # ！！！配置后需重新加载一下系统配置
+~/Desktop/libtest$ ./shared_mian 
+this is main fun
+this is myprintf_fun :test msg.
+~/Desktop/libtest$ ldd shared_mian # 可以看到库路径是我们刚才配置的
+	linux-vdso.so.1 =&gt;  (0x00007ffff7996000)
+	libmyshared.so =&gt; /home/zcy/Desktop/libtest/libmyshared.so (0x00007f16fb848000)
+	libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f16fb47e000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f16fba4a000)
+~/Desktop/libtest$ 
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Windows10 关闭快速访问删除历史纪录]]></title>
+        <id>https://starryskygit.github.io/post/windows10-guan-bi-kuai-su-fang-wen-shan-chu-li-shi-ji-lu/</id>
+        <link href="https://starryskygit.github.io/post/windows10-guan-bi-kuai-su-fang-wen-shan-chu-li-shi-ji-lu/">
+        </link>
+        <updated>2024-06-18T15:05:18.000Z</updated>
+        <content type="html"><![CDATA[<ul>
+<li>
+<p>打开&quot;我的电脑&quot;或者&quot;文件资源管理器&quot;，然后点击左上角&quot;查看&quot;，点击&quot;选项&quot;。<br>
+<img src="https://starryskygit.github.io/post-images/1718723376020.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>然后在弹出的窗口中将&quot;快速访问&quot;改为&quot;此电脑&quot;, 然后在&quot;隐私&quot;部分把<br>
+<strong>在&quot;快速访问&quot;中显示最近使用的文件,</strong><br>
+以及,<br>
+<strong>在&quot;快速访问&quot;中显示常用文件夹,</strong><br>
+<strong>去掉</strong>前面的勾。<br>
+之后点击一下&quot;清除&quot;按钮, 清除文件资源管理器历史纪录；最后点击&quot;应用&quot;和&quot;确定&quot;以保存修改的设置。<br>
+<img src="https://starryskygit.github.io/post-images/1718723381941.png" alt="" loading="lazy"></p>
+</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[git commit 的编辑器修改]]></title>
+        <id>https://starryskygit.github.io/post/git-commit-de-bian-ji-qi-xiu-gai/</id>
+        <link href="https://starryskygit.github.io/post/git-commit-de-bian-ji-qi-xiu-gai/">
+        </link>
+        <updated>2024-06-05T13:50:42.000Z</updated>
+        <content type="html"><![CDATA[<p>一般情况下 <code>git commit</code> 默认调用的编辑器是 <code>vim</code>。那如何修改成调用其他的编辑器。</p>
+<p><strong>方法：</strong></p>
+<ol>
+<li>将要调用的编辑器(如：<code>notepad--</code>)添加到系统环境变量中</li>
+<li>修改 <code>git</code> 配置，将调用编辑器改为<code>notepad--</code></li>
+</ol>
+<p><strong>具体步骤如下：</strong></p>
+<ol>
+<li>将 <code>notepad--</code> 添加到系统环境变量中：</li>
+</ol>
+<p>在 &quot;此电脑&quot; 中右键， 选择 &quot;属性&quot;,</p>
+<figure data-type="image" tabindex="1"><img src="https://starryskygit.github.io/post-images/1717595572612.png" alt="" loading="lazy"></figure>
+<p>然后会进入系统设置里找到 &quot;高级系统设置&quot;,</p>
+<figure data-type="image" tabindex="2"><img src="https://starryskygit.github.io/post-images/1717595587523.png" alt="" loading="lazy"></figure>
+<p>在弹出的窗口中点击 &quot;环境变量(N)...&quot;, 然后进行设置；</p>
+<figure data-type="image" tabindex="3"><img src="https://starryskygit.github.io/post-images/1717595599892.png" alt="" loading="lazy"></figure>
+<p>然后找到 &quot;系统变量(S)&quot; 在里面中找到变量为 &quot;PATH(或Path)&quot; 的，然后选择它，然后点击 &quot;编辑&quot;，</p>
+<figure data-type="image" tabindex="4"><img src="https://starryskygit.github.io/post-images/1717595609406.png" alt="" loading="lazy"></figure>
+<p>然后 &quot;新建&quot; ，然后输入 <code>notepad--</code> 的路径，最后点击确定保存。</p>
+<figure data-type="image" tabindex="5"><img src="https://starryskygit.github.io/post-images/1717595617849.png" alt="" loading="lazy"></figure>
+<p>验证是否配置成功：<code>win+R</code> 在弹出的运行框中输入 <code>notepad--</code> 回车， 如调用成功说明配置成功！</p>
+<figure data-type="image" tabindex="6"><img src="https://starryskygit.github.io/post-images/1717595626264.png" alt="" loading="lazy"></figure>
+<ol start="2">
+<li>配置 git</li>
+</ol>
+<p>方法一、直接敲命令：<code>git config --global core.editor notepad--</code> 就可以了。</p>
+<p><code>git config --global core.editor notepad--</code></p>
+<p>可以通过 <code>git config -l</code> 查看配置结果</p>
+<p>方法二、编辑 <code>~/.gitconfig</code> 文件，这文件一般在 <code>C:\Users\用户名\</code> 路径下。在core中添加<code>editor = notepad--</code> ()。如此以后在使用git的时候就自动使用 <code>notepad--</code> 作为编辑器</p>
+<figure data-type="image" tabindex="7"><img src="https://starryskygit.github.io/post-images/1717595647871.png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>把 <code>git commit</code> 的编辑器改回到 vim</li>
+</ol>
+<p>将上面的步骤2的 <code>notepad--</code> 改为 vim 即可。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Makefile文件编写_简单教程]]></title>
+        <id>https://starryskygit.github.io/post/makefile-wen-jian-bian-xie-_-jian-dan-jiao-cheng/</id>
+        <link href="https://starryskygit.github.io/post/makefile-wen-jian-bian-xie-_-jian-dan-jiao-cheng/">
+        </link>
+        <updated>2024-05-25T11:38:11.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="1-将几个文件编译成一个可执行文件">1、将几个文件编译成一个可执行文件</h2>
+<p>（1）如将main.c  sub_add.h sub_add.c 变成一个可执行文件main</p>
+<pre><code class="language-bash">#:~/test_makefile/t_makefile$ tree
+.
+├── main.c
+├── Makefile
+├── sub_add.c
+└── sub_add.h
+
+0 directories, 4 files
+</code></pre>
+<p>一般执行命令：</p>
+<pre><code class="language-bash">gcc -c main.c -l sub_add.h    #预处理
+gcc -c sub_add.c              #编译、汇编
+gcc -o main main.o sub_add.o  #链接
+</code></pre>
+<p>将各命令写入Makefile 文件里</p>
+<pre><code class="language-bash">#目标文件：依赖文件
+#&lt;TAB键&gt;执行命令
+
+#链接  其中main 是最终可执行文件
+main:main.o sub_add.o
+	gcc -o main main.o sub_add.o
+#预处理 处理头文件，将其加入主文件里
+main.o:main.c
+	gcc -c main.c -l sub_add.h
+#编译、汇编
+sub_add.o:sub_add.c
+	gcc -c sub_add.c
+.PHONY:clean
+clean:
+	rm -f *.o main
+</code></pre>
+<p>各文件代码：</p>
+<pre><code class="language-c">/*main.c文件*/
+#include&lt;stdio.h&gt;
+#include&quot;sub_add.h&quot;
+int main()
+{
+  int x,y;
+  printf(&quot;请输入两个正整数x和y：\n&quot;);
+  scanf(&quot;%d %d&quot;,&amp;x,&amp;y);
+  printf(&quot;x+y=%d\n&quot;,add(x,y));
+  return 0;
+}
+</code></pre>
+<pre><code class="language-c">/*sub_add.c文件*/
+/*x+y*/
+int add(int x,int y)
+{
+  return x+y;
+}
+</code></pre>
+<pre><code class="language-c">/*sub_add.h文件*/
+/*x+y*/
+int add(int x,int y);
+</code></pre>
+<p>（2）如将main.c 、 sub_add.h 、 sub_add.c 、 unsgn_pow.c 、 unsgn_pow.h变成一个可执行文件main,其中sub_add.h和unsgn_pow.h在include文件夹里</p>
+<pre><code class="language-bash">#:~/test_makefile/t_makefile1$ tree
+.
+├── include
+│   ├── sub_add.h
+│   └── unsgn_pow.h
+├── main.c
+├── Makefile
+├── sub_add.c
+└── unsgn_pow.c
+
+1 directory, 6 files
+</code></pre>
+<p>Makefile 文件1与上面例子1一样</p>
+<pre><code class="language-bash">#链接
+main:main.o sub_add.o unsgn_pow.o
+	gcc -o main main.o sub_add.o unsgn_pow.o #注意此行前面一定是tab键
+#预处理
+main.o:main.c
+	gcc -c main.c -I ./include/ #这里区别于例子1中的 -l  ,这里是 -I ,如果是单个头文件而不是文件夹的话可以用 -l
+#编译、汇编
+sub_add.o:sub_add.c
+	gcc -c sub_add.c
+unsgn_pow.o:unsgn_pow.c
+	gcc -c unsgn_pow.c
+#清除
+.PHONY:clean
+clean:
+	rm -f *.o main
+</code></pre>
+<p>Makefile 文件2</p>
+<pre><code class="language-bash">#使用自定义变量   和  隐式规则
+OBJS=main.o sub_add.o unsgn_pow.o
+CC=gcc
+#链接
+main:$(OBJS)
+	$(CC) -o $@ $(OBJS) #注意此行前面一定是tab键,$@为目标文件的完整名称即main
+
+#预处理
+main.o:main.c
+	$(CC) -c $&lt; -I ./include/ #这里如果是单个头文件而不是目录的话可以用-l,#$&lt;:第一个依赖文件即上一行的main.c
+
+#编译、汇编
+sub_add.o:sub_add.c
+	$(CC) -c $&lt; #$&lt;:第一个依赖文件即上一行的sub_add.c
+unsgn_pow.o:unsgn_pow.c
+	$(CC) -c $&lt; #$&lt;:第一个依赖文件即上一行的unsgn_pow.c
+
+#清除
+.PHONY:clean
+clean:
+	$(RM) *.o main #RM为rm -f
+
+</code></pre>
+<p>Makefile 文件3</p>
+<pre><code class="language-bash">#使用自定义变量   和  模式规则 是用来定义相同处理规则的多个文件，这个规则中的相关文件前必须用“%”标明
+OBJS=main.o sub_add.o unsgn_pow.o
+CC=gcc
+#链接
+main:$(OBJS)
+	$(CC) -o $@ $(OBJS) #也可写为$(CC) -o $@ $^,其中$^为所有不重复的依赖文件
+
+#预处理
+%.o:%.c
+	$(CC) -c $&lt; -I ./include/
+
+#清除
+.PHONY:clean
+clean:
+	$(RM) *.o main #RM为rm -f
+
+</code></pre>
+<p>各文件代码：</p>
+<pre><code class="language-c">/*main.c*/
+#include&lt;stdio.h&gt;
+#include&quot;sub_add.h&quot;
+#include&quot;unsgn_pow.h&quot;
+int main()
+{
+  int x,y;
+  printf(&quot;Please input two int numbers:\n&quot;);
+  scanf(&quot;%d%d&quot;,&amp;x,&amp;y);
+  printf(&quot;x+y=%d,x-y=%d\n&quot;,add(x,y),sub(x,y));
+  printf(&quot;x^y=%llu\n&quot;,unsgn_pow(x,y));
+  return 0;
+}
+</code></pre>
+<pre><code class="language-c">/sub_add.c/
+/*x+y*/
+int sub(int x,int y)
+{
+  return x-y;
+}
+
+/*x-y*/
+int add(int x,int y)
+{
+  return x+y;
+}
+</code></pre>
+<pre><code class="language-c">/*unsgn_pow.c*/
+/*用递归求x^y*/
+unsigned long long unsgn_pow(int x,int y)
+{
+  unsigned long long res=1;
+  if(0==y)
+    res=1;
+  else if(1==y)
+    res=x;
+  else
+    res=x*unsgn_pow(x,y-1);
+
+  return res;
+}
+</code></pre>
+<p>include文件夹里的文件</p>
+<pre><code class="language-c">/sub_add.h/
+int sub(int,int);
+int add(int,int);
+</code></pre>
+<pre><code class="language-c">/*unsgn_pow.h*/
+unsigned long long unsgn_pow(int ,int);
+</code></pre>
+<h2 id="2-makefile-中常见的预定义变量">2、Makefile 中常见的预定义变量</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AR</td>
+<td>库文件维护程序的名称，默认值为ar</td>
+</tr>
+<tr>
+<td style="text-align:left">AS</td>
+<td>汇编程序的名称，默认值为as</td>
+</tr>
+<tr>
+<td style="text-align:left">CC</td>
+<td>C编译器的名称，默认值为cc</td>
+</tr>
+<tr>
+<td style="text-align:left">CPP</td>
+<td>C预编译器的名称，默认值为$(CC) -E</td>
+</tr>
+<tr>
+<td style="text-align:left">CXX</td>
+<td>C++编译器的名称，默认值为g++</td>
+</tr>
+<tr>
+<td style="text-align:left">FC</td>
+<td>FORTRAN 编译器的名称，默认值为f77</td>
+</tr>
+<tr>
+<td style="text-align:left">RM</td>
+<td>文件删除程序的名称，默认值为rm -f</td>
+</tr>
+<tr>
+<td style="text-align:left">ARFLAGS</td>
+<td>库文件维护程序的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">ASFLAGS</td>
+<td>汇编程序的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">CFLAGS</td>
+<td>C编译器的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">CPPFLAGS</td>
+<td>C预编译的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">CXXFLAGS</td>
+<td>C++编译器的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">FFLAGS</td>
+<td>FORTRAN编译器的选项，无默认值</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-makefile-中常见的自动变量">3、Makefile 中常见的自动变量</h2>
+<table>
+<thead>
+<tr>
+<th>自动变量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$*</td>
+<td>不包含扩展名的目标文件名称</td>
+</tr>
+<tr>
+<td>$+</td>
+<td>所有的依赖文件，以空格分开，并以出现的先后为序，可能包含重复的依赖文件</td>
+</tr>
+<tr>
+<td>$&lt;</td>
+<td>第一个依赖文件的名称</td>
+</tr>
+<tr>
+<td>$?</td>
+<td>所有时间戳比目标文件晚的依赖文件，并以空格分开</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>目标文件的完整名称</td>
+</tr>
+<tr>
+<td>$^</td>
+<td>所有不重复的依赖文件，以空格分开</td>
+</tr>
+<tr>
+<td>$%</td>
+<td>如果目标是归档成员，则该变量表示目标的归档成员名称。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>对应语言后缀名</th>
+<th>隐式规则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C编译：.c 变为 .o</td>
+<td>$(CC) -c $(CPPFLAGS) $(CFLAGS)</td>
+</tr>
+<tr>
+<td>C++编译：.cc 或 .C 变为 .o</td>
+<td>$(CXX) -c $(CPPFLAGS) $(CXXFLAGS)</td>
+</tr>
+<tr>
+<td>Pascal编译：.p 变为 .o</td>
+<td>$(PC) -c $(PFLAGS)</td>
+</tr>
+<tr>
+<td>Fortran编译：.r 变为 .o</td>
+<td>$(FC) -c $(FFLAGS)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-make-的命令行选项">4、make 的命令行选项</h2>
+<table>
+<thead>
+<tr>
+<th>命令格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-C dir</td>
+<td>读入指定目录下的 makefile</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>读入当前目录下的 file 文件作为 makefile</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>忽略所有的命令执行错误</td>
+</tr>
+<tr>
+<td>-I dir</td>
+<td>指定被包含的 makefile 所在目录</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>只打印要执行的命令，但不执行这些命令</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>显示 make 变量数据库和隐含规则</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>在执行命令时不显示命令</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>如果 make 在执行过程中改变目录，则打印当前目录名</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-makefile中的phony和all的作用">5、Makefile中的.PHONY和all的作用</h2>
+<p>.PHONY（伪目标）</p>
+<p>伪目标是这样一个目标：它不代表一个真正的文件名，在执行make时可以指定这个目标来执行所在规则定义的命令，有时也可以将一个伪目标称为标签。伪目标通过PHONY来指明。</p>
+<pre><code class="language-纯文本">PHONY定义伪目标的命令一定会被执行，下面尝试分析这种优点的妙处。
+</code></pre>
+<p>1、如果我们指定的目标不是创建目标文件，而是使用makefile执行一些特定的命令，例如：</p>
+<pre><code class="language-bash">clean:
+	rm *.o temp
+</code></pre>
+<p>我们希望，只要输入”make clean“后，”rm *.o temp“命令就会执行。但是，当当前目录中存在一个和指定目标重名的文件时，例如clean文件，结果就不是我们想要的了。输入”make clean“后，“rm *.o temp” 命令一定不会被执行。</p>
+<p>解决的办法：将目标clean定义成伪目标就成了 无论当前目录下是否存在“clean”这个文件，输入“make clean”后，“rm *.o temp”命令都会被执行。</p>
+<p>注意：这种做法的带来的好处还不止此，它同时提高了make的执行效率，因为将clean定义成伪目标后，make的执行程序不会试图寻找clean的隐含规则。</p>
+<p>2、PHONY可以确保源文件（ <em>.c</em> .h）修改后，对应的目标文件会被重建。</p>
+<p><strong>all</strong></p>
+<p>举个例子：<br>
+请编写一个makefile同时编译、链接下面两个程序：</p>
+<p>main1.c：</p>
+<pre><code class="language-c">#include&lt;stdio.h&gt;
+
+int main(void)
+{
+    printf(&quot;main1\n&quot;);
+}
+</code></pre>
+<p>main2.c：</p>
+<pre><code class="language-c">#include&lt;stdio.h&gt;
+
+int main(void)
+{
+    printf(&quot;main2\n&quot;);
+}
+</code></pre>
+<p>【分析】：这里需要生成两个可执行文件main1和main2（两个目标）。由于makefile只能有一个目标，所以可以构造一个没有规则的终极目标all，并以这两个可执行文件作为依赖。如下：</p>
+<p>makefile：</p>
+<pre><code class="language-bash">all:main1 main2
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.c
+	gcc main2.c -o main2
+</code></pre>
+<p>很多时候我们在执行make时会产生许多过程文件，比如将上面的makefile改为：</p>
+<p>makefile：</p>
+<pre><code class="language-bash">all:main1 main2
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.o
+	gcc main2.o -o main2
+main2.o: main2.c
+	gcc -c main2.c 
+</code></pre>
+<p>这样就会生成一个我们不需要的过程文件main2.o。</p>
+<p>如果希望将生成的过程文件删掉，根据前面再增加一个目标clean：</p>
+<pre><code class="language-bash">all:main1 main2 clean
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.o
+	gcc main2.o -o main2
+main2.o: main2.c
+	gcc -c main2.c 
+
+clean:
+	rm -f main2.o
+</code></pre>
+<p>但是当我们make之后main2.o仍然存在，怎么回事呢makefile中的all和.PHONY的作用</p>
+<p>原来这里的目标clean没有任何依赖，make执行时认为这已经到“根上”了（就是认为磁盘上有clean，就像main2.c），将其忽略（尽管它有规则）。</p>
+<p>关键字.PHONY可以解决这问题，告诉make该目标是“假的”（磁盘上其实没有clean），这时make为生成这个目标就会将其规则执行一次。.PHONY修饰的目标就是只有规则没有依赖。</p>
+<p>加上一句.PHONY：clean即可：</p>
+<pre><code class="language-bash">all:main1 main2 clean
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.o
+	gcc main2.o -o main2
+main2.o: main2.c
+	gcc -c main2.c 
+
+.PHONY：clean
+clean:
+	rm -f main2.o
+</code></pre>
+<p><a href="https://blog.csdn.net/tonglin12138/article/details/88636170">.PHONY参考链接</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Qt 获取当前时间]]></title>
+        <id>https://starryskygit.github.io/post/qt-huo-qu-dang-qian-shi-jian/</id>
+        <link href="https://starryskygit.github.io/post/qt-huo-qu-dang-qian-shi-jian/">
+        </link>
+        <updated>2024-05-22T13:41:06.000Z</updated>
+        <content type="html"><![CDATA[<pre><code class="language-cpp">//头文件 
+#include &lt;QDateTime&gt;
+
+QDateTime current_time = QDateTime::currentDateTime();
+QString time1 = current_time.toString(&quot;yyyy-MM-dd hh:mm:ss ddd&quot;);
+qDebug()&lt;&lt;time1;
+QString time = current_time.toString(&quot;yyyyMMddhhmmss&quot;);
+qDebug()&lt;&lt;time;
+int time2 = current_time.toTime_t();
+qDebug()&lt;&lt;time2;
+</code></pre>
+<pre><code>//结果
+&quot;2022-02-14 14:20:04 周一&quot;
+&quot;20220214142004&quot;
+1716454865
+</code></pre>
+<p>可以通过该结果给自动生成的文件命名等等。<br>
+yyyy-MM-dd hh:mm:ss.zzz dddd 各字段的意思</p>
+<pre><code class="language-cpp">#include &lt;QDateTime&gt;
+qDebug()&lt;&lt;QDateTime::currentDateTime().toString(&quot;yyyy-MM-dd hh:mm:ss.zzz dddd&quot;); //年-月-日 时:分:秒.毫秒 星期五
+</code></pre>
+<p>yyyy：年<br>
+MM：月<br>
+dd：日<br>
+hh：小时<br>
+mm：分钟<br>
+ss：秒<br>
+zzz：毫秒<br>
+dddd：星期五（ddd：周五）</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Qt 字体和编码设置]]></title>
+        <id>https://starryskygit.github.io/post/qt-zi-ti-he-bian-ma-she-zhi/</id>
+        <link href="https://starryskygit.github.io/post/qt-zi-ti-he-bian-ma-she-zhi/">
+        </link>
+        <updated>2024-05-18T08:42:10.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="1-设置程序编码">1、设置程序编码</h2>
+<pre><code class="language-cpp">QTextCodec *codec = QTextCodec::codecForName(&quot;UTF-8&quot;);//或者&quot;GBK&quot;,不分大小写
+QTextCodec::setCodecForLocale(codec);
+</code></pre>
+<h2 id="2-指定程序使用字体库路径">2、指定程序使用字体库路径</h2>
+<pre><code class="language-cpp">int fontId = QFontDatabase::addApplicationFont(QStringLiteral(&quot;/mnt/nfs/msyh.ttf&quot;)); //设置字体库的路径
+QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontId);
+qDebug()&lt;&lt;&quot;fontfamilies:&quot;&lt;&lt;fontFamilies;
+if(fontFamilies.size() &gt; 0)
+{
+    QFont font;
+    font.setFamily(fontFamilies[0]);//设置全局字体
+    a.setFont(font);
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[工具资源]]></title>
+        <id>https://starryskygit.github.io/post/gong-ju-zi-yuan/</id>
+        <link href="https://starryskygit.github.io/post/gong-ju-zi-yuan/">
+        </link>
+        <updated>2024-05-17T12:03:17.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="工具">🛠工具</h2>
+<p><a href="https://lapce.dev/" title="1、 lapce"><strong>1、 lapce</strong></a></p>
+<p>一款由 Rust 编写的轻量级代码编辑器，它支持 Windows、macOS 和 Linux，软件完全免费且开源，它提供了更快地代码打开和编码速度，节省你的资源占用，它使用了带有GPU加速的原生GUI，在启动编辑器时不再需要多余的等待时间，在编码时你的任何按键都能立即应用，如果你在找一款轻量的编辑器可以尝试下。<br>
+<img src="https://starryskygit.github.io/post-images/1715947995955.png" alt="" loading="lazy"></p>
+<p><a href="https://github.com/FreshRSS/FreshRSS" title="2、FreshRSS"><strong>2、FreshRSS</strong></a></p>
+<p>FreshRSS 是一款自由免费的 RSS 订阅器，界面美观，支持导入/导出为 OPML 文件、过滤、标记、搜索等。</p>
+<p><a href="https://www.jsont.run/" title="3、jsont.run"><strong>3、jsont.run</strong></a></p>
+<p>一个简洁的在线 JSON 解析器。<br>
+<img src="https://starryskygit.github.io/post-images/1715948050574.png" alt="" loading="lazy"></p>
+<p><a href="https://github.com/utmapp/UTM" title="4、UTM"><strong>4、UTM</strong></a></p>
+<p>开源免费的虚拟机软件，Parallels Desktop 替代品，支持M1架构。</p>
+<p><a href="https://excalidraw.com/" title="5、Excalidraw"><strong>5、Excalidraw</strong></a></p>
+<p>手绘风格线框图工具 ,在浏览器中打开即用的手绘风格线框图工具，支持多人协作、导出PNG/SVG，协作功能居然还提供了端对端加密。源代码在 GitHub 开源。<br>
+<img src="https://starryskygit.github.io/post-images/1715948135183.png" alt="" loading="lazy"></p>
+<h2 id="资源">🗂资源</h2>
+<p><a href="https://iui.su/2217/" title="1、全网免费音乐搜索汇总"><strong>1、全网免费音乐搜索汇总</strong></a></p>
+<p>免费音乐的聚合网站，里面可以免费在线听和下载一下会员歌曲。<br>
+<img src="https://starryskygit.github.io/post-images/1715948157233.png" alt="" loading="lazy"></p>
+<p><a href="https://apkpremier.com/details/com-uc_turbo" title="2、Google 商店 Apk 的下载途径"><strong>2、Google 商店 Apk 的下载途径</strong></a></p>
+<p>一个选择谷歌商店 Apk 的类似网站。<br>
+<img src="https://starryskygit.github.io/post-images/1715948166679.png" alt="" loading="lazy"></p>
+<p><a href="https://bing.wdbyte.com/2021-02" title="3、必应壁纸"><strong>3、必应壁纸</strong></a></p>
+<p>一个可以免费下载必应壁纸的网站。<br>
+<img src="https://starryskygit.github.io/post-images/1715948177647.png" alt="" loading="lazy"></p>
+<p><a href="https://github.com/niumoo/bing-wallpaper" title="抓取必应每日壁纸的 GitHub Actions 模板">抓取必应每日壁纸的 GitHub Actions 模板</a></p>
+]]></content>
+    </entry>
+</feed>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>git commit 的编辑器修改 | 未名的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://starryskygit.github.io/favicon.ico?v=1723309909957">
+<link rel="stylesheet" href="https://starryskygit.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="一般情况下 git commit 默认调用的编辑器是 vim。那如何修改成调用其他的编辑器。
+方法：
+
+将要调用的编辑器(如：notepad--)添加到系统环境变量中
+修改 git 配置，将调用编辑器改为notepad--
+
+具体步骤如下：..." />
+    <meta name="keywords" content="git,commit,环境变量,Windows" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://starryskygit.github.io">
+        <img src="https://starryskygit.github.io/images/avatar.png?v=1723309909957" class="site-logo">
+        <h1 class="site-title">未名的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://starryskygit.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">git commit 的编辑器修改</h2>
+            <div class="post-date">2024-06-05</div>
+            
+              <div class="feature-container" style="background-image: url('https://starryskygit.github.io/post-images/git-commit-de-bian-ji-qi-xiu-gai.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>一般情况下 <code>git commit</code> 默认调用的编辑器是 <code>vim</code>。那如何修改成调用其他的编辑器。</p>
+<p><strong>方法：</strong></p>
+<ol>
+<li>将要调用的编辑器(如：<code>notepad--</code>)添加到系统环境变量中</li>
+<li>修改 <code>git</code> 配置，将调用编辑器改为<code>notepad--</code></li>
+</ol>
+<p><strong>具体步骤如下：</strong></p>
+<ol>
+<li>将 <code>notepad--</code> 添加到系统环境变量中：</li>
+</ol>
+<p>在 &quot;此电脑&quot; 中右键， 选择 &quot;属性&quot;,</p>
+<figure data-type="image" tabindex="1"><img src="https://starryskygit.github.io/post-images/1717595572612.png" alt="" loading="lazy"></figure>
+<p>然后会进入系统设置里找到 &quot;高级系统设置&quot;,</p>
+<figure data-type="image" tabindex="2"><img src="https://starryskygit.github.io/post-images/1717595587523.png" alt="" loading="lazy"></figure>
+<p>在弹出的窗口中点击 &quot;环境变量(N)...&quot;, 然后进行设置；</p>
+<figure data-type="image" tabindex="3"><img src="https://starryskygit.github.io/post-images/1717595599892.png" alt="" loading="lazy"></figure>
+<p>然后找到 &quot;系统变量(S)&quot; 在里面中找到变量为 &quot;PATH(或Path)&quot; 的，然后选择它，然后点击 &quot;编辑&quot;，</p>
+<figure data-type="image" tabindex="4"><img src="https://starryskygit.github.io/post-images/1717595609406.png" alt="" loading="lazy"></figure>
+<p>然后 &quot;新建&quot; ，然后输入 <code>notepad--</code> 的路径，最后点击确定保存。</p>
+<figure data-type="image" tabindex="5"><img src="https://starryskygit.github.io/post-images/1717595617849.png" alt="" loading="lazy"></figure>
+<p>验证是否配置成功：<code>win+R</code> 在弹出的运行框中输入 <code>notepad--</code> 回车， 如调用成功说明配置成功！</p>
+<figure data-type="image" tabindex="6"><img src="https://starryskygit.github.io/post-images/1717595626264.png" alt="" loading="lazy"></figure>
+<ol start="2">
+<li>配置 git</li>
+</ol>
+<p>方法一、直接敲命令：<code>git config --global core.editor notepad--</code> 就可以了。</p>
+<p><code>git config --global core.editor notepad--</code></p>
+<p>可以通过 <code>git config -l</code> 查看配置结果</p>
+<p>方法二、编辑 <code>~/.gitconfig</code> 文件，这文件一般在 <code>C:\Users\用户名\</code> 路径下。在core中添加<code>editor = notepad--</code> ()。如此以后在使用git的时候就自动使用 <code>notepad--</code> 作为编辑器</p>
+<figure data-type="image" tabindex="7"><img src="https://starryskygit.github.io/post-images/1717595647871.png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>把 <code>git commit</code> 的编辑器改回到 vim</li>
+</ol>
+<p>将上面的步骤2的 <code>notepad--</code> 改为 vim 即可。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://starryskygit.github.io/tag/CGMAtP3Hy/" class="tag">
+                    git
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/AyJY7xedXf/" class="tag">
+                    commit
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/hLuIu-BcAB/" class="tag">
+                    环境变量
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/YYaHSkZyZt/" class="tag">
+                    Windows
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://starryskygit.github.io/post/makefile-wen-jian-bian-xie-_-jian-dan-jiao-cheng/">
+                  <h3 class="post-title">
+                    Makefile文件编写_简单教程
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

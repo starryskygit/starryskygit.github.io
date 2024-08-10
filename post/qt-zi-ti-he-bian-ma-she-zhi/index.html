@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Qt 字体和编码设置 | 未名的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://starryskygit.github.io/favicon.ico?v=1723309909957">
+<link rel="stylesheet" href="https://starryskygit.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="1、设置程序编码
+QTextCodec *codec = QTextCodec::codecForName(&quot;UTF-8&quot;);//或者&quot;GBK&quot;,不分大小写
+QTextCodec::setCodecF..." />
+    <meta name="keywords" content="QT" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://starryskygit.github.io">
+        <img src="https://starryskygit.github.io/images/avatar.png?v=1723309909957" class="site-logo">
+        <h1 class="site-title">未名的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://starryskygit.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Qt 字体和编码设置</h2>
+            <div class="post-date">2024-05-18</div>
+            
+              <div class="feature-container" style="background-image: url('https://starryskygit.github.io/post-images/qt-zi-ti-he-bian-ma-she-zhi.jpg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="1-设置程序编码">1、设置程序编码</h2>
+<pre><code class="language-cpp">QTextCodec *codec = QTextCodec::codecForName(&quot;UTF-8&quot;);//或者&quot;GBK&quot;,不分大小写
+QTextCodec::setCodecForLocale(codec);
+</code></pre>
+<h2 id="2-指定程序使用字体库路径">2、指定程序使用字体库路径</h2>
+<pre><code class="language-cpp">int fontId = QFontDatabase::addApplicationFont(QStringLiteral(&quot;/mnt/nfs/msyh.ttf&quot;)); //设置字体库的路径
+QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontId);
+qDebug()&lt;&lt;&quot;fontfamilies:&quot;&lt;&lt;fontFamilies;
+if(fontFamilies.size() &gt; 0)
+{
+    QFont font;
+    font.setFamily(fontFamilies[0]);//设置全局字体
+    a.setFont(font);
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://starryskygit.github.io/tag/_kn05mRoR/" class="tag">
+                    QT
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://starryskygit.github.io/post/gong-ju-zi-yuan/">
+                  <h3 class="post-title">
+                    工具资源
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

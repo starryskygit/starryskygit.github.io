@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Qt 获取当前时间 | 未名的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://starryskygit.github.io/favicon.ico?v=1723309909957">
+<link rel="stylesheet" href="https://starryskygit.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="//头文件 
+#include &lt;QDateTime&gt;
+
+QDateTime current_time = QDateTime::currentDateTime();
+QString time1 = current_time.t..." />
+    <meta name="keywords" content="QT" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://starryskygit.github.io">
+        <img src="https://starryskygit.github.io/images/avatar.png?v=1723309909957" class="site-logo">
+        <h1 class="site-title">未名的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://starryskygit.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Qt 获取当前时间</h2>
+            <div class="post-date">2024-05-22</div>
+            
+              <div class="feature-container" style="background-image: url('https://starryskygit.github.io/post-images/qt-huo-qu-dang-qian-shi-jian.jpg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <pre><code class="language-cpp">//头文件 
+#include &lt;QDateTime&gt;
+
+QDateTime current_time = QDateTime::currentDateTime();
+QString time1 = current_time.toString(&quot;yyyy-MM-dd hh:mm:ss ddd&quot;);
+qDebug()&lt;&lt;time1;
+QString time = current_time.toString(&quot;yyyyMMddhhmmss&quot;);
+qDebug()&lt;&lt;time;
+int time2 = current_time.toTime_t();
+qDebug()&lt;&lt;time2;
+</code></pre>
+<pre><code>//结果
+&quot;2022-02-14 14:20:04 周一&quot;
+&quot;20220214142004&quot;
+1716454865
+</code></pre>
+<p>可以通过该结果给自动生成的文件命名等等。<br>
+yyyy-MM-dd hh:mm:ss.zzz dddd 各字段的意思</p>
+<pre><code class="language-cpp">#include &lt;QDateTime&gt;
+qDebug()&lt;&lt;QDateTime::currentDateTime().toString(&quot;yyyy-MM-dd hh:mm:ss.zzz dddd&quot;); //年-月-日 时:分:秒.毫秒 星期五
+</code></pre>
+<p>yyyy：年<br>
+MM：月<br>
+dd：日<br>
+hh：小时<br>
+mm：分钟<br>
+ss：秒<br>
+zzz：毫秒<br>
+dddd：星期五（ddd：周五）</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://starryskygit.github.io/tag/_kn05mRoR/" class="tag">
+                    QT
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://starryskygit.github.io/post/qt-zi-ti-he-bian-ma-she-zhi/">
+                  <h3 class="post-title">
+                    Qt 字体和编码设置
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

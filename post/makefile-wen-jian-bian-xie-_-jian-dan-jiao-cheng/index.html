@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Makefile文件编写_简单教程 | 未名的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://starryskygit.github.io/favicon.ico?v=1723309909957">
+<link rel="stylesheet" href="https://starryskygit.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="1、将几个文件编译成一个可执行文件
+（1）如将main.c  sub_add.h sub_add.c 变成一个可执行文件main
+#:~/test_makefile/t_makefile$ tree
+.
+├── main.c
+├── Mak..." />
+    <meta name="keywords" content="Makefile,Linux,C" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://starryskygit.github.io">
+        <img src="https://starryskygit.github.io/images/avatar.png?v=1723309909957" class="site-logo">
+        <h1 class="site-title">未名的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://starryskygit.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Makefile文件编写_简单教程</h2>
+            <div class="post-date">2024-05-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://starryskygit.github.io/post-images/makefile-wen-jian-bian-xie-_-jian-dan-jiao-cheng.jpg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="1-将几个文件编译成一个可执行文件">1、将几个文件编译成一个可执行文件</h2>
+<p>（1）如将main.c  sub_add.h sub_add.c 变成一个可执行文件main</p>
+<pre><code class="language-bash">#:~/test_makefile/t_makefile$ tree
+.
+├── main.c
+├── Makefile
+├── sub_add.c
+└── sub_add.h
+
+0 directories, 4 files
+</code></pre>
+<p>一般执行命令：</p>
+<pre><code class="language-bash">gcc -c main.c -l sub_add.h    #预处理
+gcc -c sub_add.c              #编译、汇编
+gcc -o main main.o sub_add.o  #链接
+</code></pre>
+<p>将各命令写入Makefile 文件里</p>
+<pre><code class="language-bash">#目标文件：依赖文件
+#&lt;TAB键&gt;执行命令
+
+#链接  其中main 是最终可执行文件
+main:main.o sub_add.o
+	gcc -o main main.o sub_add.o
+#预处理 处理头文件，将其加入主文件里
+main.o:main.c
+	gcc -c main.c -l sub_add.h
+#编译、汇编
+sub_add.o:sub_add.c
+	gcc -c sub_add.c
+.PHONY:clean
+clean:
+	rm -f *.o main
+</code></pre>
+<p>各文件代码：</p>
+<pre><code class="language-c">/*main.c文件*/
+#include&lt;stdio.h&gt;
+#include&quot;sub_add.h&quot;
+int main()
+{
+  int x,y;
+  printf(&quot;请输入两个正整数x和y：\n&quot;);
+  scanf(&quot;%d %d&quot;,&amp;x,&amp;y);
+  printf(&quot;x+y=%d\n&quot;,add(x,y));
+  return 0;
+}
+</code></pre>
+<pre><code class="language-c">/*sub_add.c文件*/
+/*x+y*/
+int add(int x,int y)
+{
+  return x+y;
+}
+</code></pre>
+<pre><code class="language-c">/*sub_add.h文件*/
+/*x+y*/
+int add(int x,int y);
+</code></pre>
+<p>（2）如将main.c 、 sub_add.h 、 sub_add.c 、 unsgn_pow.c 、 unsgn_pow.h变成一个可执行文件main,其中sub_add.h和unsgn_pow.h在include文件夹里</p>
+<pre><code class="language-bash">#:~/test_makefile/t_makefile1$ tree
+.
+├── include
+│   ├── sub_add.h
+│   └── unsgn_pow.h
+├── main.c
+├── Makefile
+├── sub_add.c
+└── unsgn_pow.c
+
+1 directory, 6 files
+</code></pre>
+<p>Makefile 文件1与上面例子1一样</p>
+<pre><code class="language-bash">#链接
+main:main.o sub_add.o unsgn_pow.o
+	gcc -o main main.o sub_add.o unsgn_pow.o #注意此行前面一定是tab键
+#预处理
+main.o:main.c
+	gcc -c main.c -I ./include/ #这里区别于例子1中的 -l  ,这里是 -I ,如果是单个头文件而不是文件夹的话可以用 -l
+#编译、汇编
+sub_add.o:sub_add.c
+	gcc -c sub_add.c
+unsgn_pow.o:unsgn_pow.c
+	gcc -c unsgn_pow.c
+#清除
+.PHONY:clean
+clean:
+	rm -f *.o main
+</code></pre>
+<p>Makefile 文件2</p>
+<pre><code class="language-bash">#使用自定义变量   和  隐式规则
+OBJS=main.o sub_add.o unsgn_pow.o
+CC=gcc
+#链接
+main:$(OBJS)
+	$(CC) -o $@ $(OBJS) #注意此行前面一定是tab键,$@为目标文件的完整名称即main
+
+#预处理
+main.o:main.c
+	$(CC) -c $&lt; -I ./include/ #这里如果是单个头文件而不是目录的话可以用-l,#$&lt;:第一个依赖文件即上一行的main.c
+
+#编译、汇编
+sub_add.o:sub_add.c
+	$(CC) -c $&lt; #$&lt;:第一个依赖文件即上一行的sub_add.c
+unsgn_pow.o:unsgn_pow.c
+	$(CC) -c $&lt; #$&lt;:第一个依赖文件即上一行的unsgn_pow.c
+
+#清除
+.PHONY:clean
+clean:
+	$(RM) *.o main #RM为rm -f
+
+</code></pre>
+<p>Makefile 文件3</p>
+<pre><code class="language-bash">#使用自定义变量   和  模式规则 是用来定义相同处理规则的多个文件，这个规则中的相关文件前必须用“%”标明
+OBJS=main.o sub_add.o unsgn_pow.o
+CC=gcc
+#链接
+main:$(OBJS)
+	$(CC) -o $@ $(OBJS) #也可写为$(CC) -o $@ $^,其中$^为所有不重复的依赖文件
+
+#预处理
+%.o:%.c
+	$(CC) -c $&lt; -I ./include/
+
+#清除
+.PHONY:clean
+clean:
+	$(RM) *.o main #RM为rm -f
+
+</code></pre>
+<p>各文件代码：</p>
+<pre><code class="language-c">/*main.c*/
+#include&lt;stdio.h&gt;
+#include&quot;sub_add.h&quot;
+#include&quot;unsgn_pow.h&quot;
+int main()
+{
+  int x,y;
+  printf(&quot;Please input two int numbers:\n&quot;);
+  scanf(&quot;%d%d&quot;,&amp;x,&amp;y);
+  printf(&quot;x+y=%d,x-y=%d\n&quot;,add(x,y),sub(x,y));
+  printf(&quot;x^y=%llu\n&quot;,unsgn_pow(x,y));
+  return 0;
+}
+</code></pre>
+<pre><code class="language-c">/sub_add.c/
+/*x+y*/
+int sub(int x,int y)
+{
+  return x-y;
+}
+
+/*x-y*/
+int add(int x,int y)
+{
+  return x+y;
+}
+</code></pre>
+<pre><code class="language-c">/*unsgn_pow.c*/
+/*用递归求x^y*/
+unsigned long long unsgn_pow(int x,int y)
+{
+  unsigned long long res=1;
+  if(0==y)
+    res=1;
+  else if(1==y)
+    res=x;
+  else
+    res=x*unsgn_pow(x,y-1);
+
+  return res;
+}
+</code></pre>
+<p>include文件夹里的文件</p>
+<pre><code class="language-c">/sub_add.h/
+int sub(int,int);
+int add(int,int);
+</code></pre>
+<pre><code class="language-c">/*unsgn_pow.h*/
+unsigned long long unsgn_pow(int ,int);
+</code></pre>
+<h2 id="2-makefile-中常见的预定义变量">2、Makefile 中常见的预定义变量</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AR</td>
+<td>库文件维护程序的名称，默认值为ar</td>
+</tr>
+<tr>
+<td style="text-align:left">AS</td>
+<td>汇编程序的名称，默认值为as</td>
+</tr>
+<tr>
+<td style="text-align:left">CC</td>
+<td>C编译器的名称，默认值为cc</td>
+</tr>
+<tr>
+<td style="text-align:left">CPP</td>
+<td>C预编译器的名称，默认值为$(CC) -E</td>
+</tr>
+<tr>
+<td style="text-align:left">CXX</td>
+<td>C++编译器的名称，默认值为g++</td>
+</tr>
+<tr>
+<td style="text-align:left">FC</td>
+<td>FORTRAN 编译器的名称，默认值为f77</td>
+</tr>
+<tr>
+<td style="text-align:left">RM</td>
+<td>文件删除程序的名称，默认值为rm -f</td>
+</tr>
+<tr>
+<td style="text-align:left">ARFLAGS</td>
+<td>库文件维护程序的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">ASFLAGS</td>
+<td>汇编程序的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">CFLAGS</td>
+<td>C编译器的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">CPPFLAGS</td>
+<td>C预编译的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">CXXFLAGS</td>
+<td>C++编译器的选项，无默认值</td>
+</tr>
+<tr>
+<td style="text-align:left">FFLAGS</td>
+<td>FORTRAN编译器的选项，无默认值</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-makefile-中常见的自动变量">3、Makefile 中常见的自动变量</h2>
+<table>
+<thead>
+<tr>
+<th>自动变量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$*</td>
+<td>不包含扩展名的目标文件名称</td>
+</tr>
+<tr>
+<td>$+</td>
+<td>所有的依赖文件，以空格分开，并以出现的先后为序，可能包含重复的依赖文件</td>
+</tr>
+<tr>
+<td>$&lt;</td>
+<td>第一个依赖文件的名称</td>
+</tr>
+<tr>
+<td>$?</td>
+<td>所有时间戳比目标文件晚的依赖文件，并以空格分开</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>目标文件的完整名称</td>
+</tr>
+<tr>
+<td>$^</td>
+<td>所有不重复的依赖文件，以空格分开</td>
+</tr>
+<tr>
+<td>$%</td>
+<td>如果目标是归档成员，则该变量表示目标的归档成员名称。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>对应语言后缀名</th>
+<th>隐式规则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C编译：.c 变为 .o</td>
+<td>$(CC) -c $(CPPFLAGS) $(CFLAGS)</td>
+</tr>
+<tr>
+<td>C++编译：.cc 或 .C 变为 .o</td>
+<td>$(CXX) -c $(CPPFLAGS) $(CXXFLAGS)</td>
+</tr>
+<tr>
+<td>Pascal编译：.p 变为 .o</td>
+<td>$(PC) -c $(PFLAGS)</td>
+</tr>
+<tr>
+<td>Fortran编译：.r 变为 .o</td>
+<td>$(FC) -c $(FFLAGS)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-make-的命令行选项">4、make 的命令行选项</h2>
+<table>
+<thead>
+<tr>
+<th>命令格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-C dir</td>
+<td>读入指定目录下的 makefile</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>读入当前目录下的 file 文件作为 makefile</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>忽略所有的命令执行错误</td>
+</tr>
+<tr>
+<td>-I dir</td>
+<td>指定被包含的 makefile 所在目录</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>只打印要执行的命令，但不执行这些命令</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>显示 make 变量数据库和隐含规则</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>在执行命令时不显示命令</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>如果 make 在执行过程中改变目录，则打印当前目录名</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-makefile中的phony和all的作用">5、Makefile中的.PHONY和all的作用</h2>
+<p>.PHONY（伪目标）</p>
+<p>伪目标是这样一个目标：它不代表一个真正的文件名，在执行make时可以指定这个目标来执行所在规则定义的命令，有时也可以将一个伪目标称为标签。伪目标通过PHONY来指明。</p>
+<pre><code class="language-纯文本">PHONY定义伪目标的命令一定会被执行，下面尝试分析这种优点的妙处。
+</code></pre>
+<p>1、如果我们指定的目标不是创建目标文件，而是使用makefile执行一些特定的命令，例如：</p>
+<pre><code class="language-bash">clean:
+	rm *.o temp
+</code></pre>
+<p>我们希望，只要输入”make clean“后，”rm *.o temp“命令就会执行。但是，当当前目录中存在一个和指定目标重名的文件时，例如clean文件，结果就不是我们想要的了。输入”make clean“后，“rm *.o temp” 命令一定不会被执行。</p>
+<p>解决的办法：将目标clean定义成伪目标就成了 无论当前目录下是否存在“clean”这个文件，输入“make clean”后，“rm *.o temp”命令都会被执行。</p>
+<p>注意：这种做法的带来的好处还不止此，它同时提高了make的执行效率，因为将clean定义成伪目标后，make的执行程序不会试图寻找clean的隐含规则。</p>
+<p>2、PHONY可以确保源文件（ <em>.c</em> .h）修改后，对应的目标文件会被重建。</p>
+<p><strong>all</strong></p>
+<p>举个例子：<br>
+请编写一个makefile同时编译、链接下面两个程序：</p>
+<p>main1.c：</p>
+<pre><code class="language-c">#include&lt;stdio.h&gt;
+
+int main(void)
+{
+    printf(&quot;main1\n&quot;);
+}
+</code></pre>
+<p>main2.c：</p>
+<pre><code class="language-c">#include&lt;stdio.h&gt;
+
+int main(void)
+{
+    printf(&quot;main2\n&quot;);
+}
+</code></pre>
+<p>【分析】：这里需要生成两个可执行文件main1和main2（两个目标）。由于makefile只能有一个目标，所以可以构造一个没有规则的终极目标all，并以这两个可执行文件作为依赖。如下：</p>
+<p>makefile：</p>
+<pre><code class="language-bash">all:main1 main2
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.c
+	gcc main2.c -o main2
+</code></pre>
+<p>很多时候我们在执行make时会产生许多过程文件，比如将上面的makefile改为：</p>
+<p>makefile：</p>
+<pre><code class="language-bash">all:main1 main2
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.o
+	gcc main2.o -o main2
+main2.o: main2.c
+	gcc -c main2.c 
+</code></pre>
+<p>这样就会生成一个我们不需要的过程文件main2.o。</p>
+<p>如果希望将生成的过程文件删掉，根据前面再增加一个目标clean：</p>
+<pre><code class="language-bash">all:main1 main2 clean
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.o
+	gcc main2.o -o main2
+main2.o: main2.c
+	gcc -c main2.c 
+
+clean:
+	rm -f main2.o
+</code></pre>
+<p>但是当我们make之后main2.o仍然存在，怎么回事呢makefile中的all和.PHONY的作用</p>
+<p>原来这里的目标clean没有任何依赖，make执行时认为这已经到“根上”了（就是认为磁盘上有clean，就像main2.c），将其忽略（尽管它有规则）。</p>
+<p>关键字.PHONY可以解决这问题，告诉make该目标是“假的”（磁盘上其实没有clean），这时make为生成这个目标就会将其规则执行一次。.PHONY修饰的目标就是只有规则没有依赖。</p>
+<p>加上一句.PHONY：clean即可：</p>
+<pre><code class="language-bash">all:main1 main2 clean
+main1: main1.c
+	gcc main1.c -o main1
+main2: main2.o
+	gcc main2.o -o main2
+main2.o: main2.c
+	gcc -c main2.c 
+
+.PHONY：clean
+clean:
+	rm -f main2.o
+</code></pre>
+<p><a href="https://blog.csdn.net/tonglin12138/article/details/88636170">.PHONY参考链接</a></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://starryskygit.github.io/tag/tZmQwsDJZ/" class="tag">
+                    Makefile
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/KNJNua1m16/" class="tag">
+                    Linux
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/lZOEbwkZTx/" class="tag">
+                    C
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://starryskygit.github.io/post/qt-huo-qu-dang-qian-shi-jian/">
+                  <h3 class="post-title">
+                    Qt 获取当前时间
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

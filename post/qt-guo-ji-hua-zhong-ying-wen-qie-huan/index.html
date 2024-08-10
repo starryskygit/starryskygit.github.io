@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Qt国际化-中英文切换 | 未名的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://starryskygit.github.io/favicon.ico?v=1723309909957">
+<link rel="stylesheet" href="https://starryskygit.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+将需要翻译的地方的字符串用 tr() 方法进行设置
+
+
+pro文件中添加 ，添加如下语句。这条语句是为了生成两个.ts文件
+
+
+TRANSLATIONS = English.ts Chinese.ts  //文件名字自己随便取
+
+通过“..." />
+    <meta name="keywords" content="语言切换,QT" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://starryskygit.github.io">
+        <img src="https://starryskygit.github.io/images/avatar.png?v=1723309909957" class="site-logo">
+        <h1 class="site-title">未名的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://starryskygit.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Qt国际化-中英文切换</h2>
+            <div class="post-date">2024-06-30</div>
+            
+              <div class="feature-container" style="background-image: url('https://starryskygit.github.io/post-images/qt-guo-ji-hua-zhong-ying-wen-qie-huan.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <ol>
+<li>
+<p>将需要翻译的地方的字符串用 <code>tr()</code> 方法进行设置</p>
+</li>
+<li>
+<p><code>pro</code>文件中添加 ，添加如下语句。这条语句是为了生成两个.ts文件</p>
+</li>
+</ol>
+<p><code>TRANSLATIONS = English.ts Chinese.ts</code>  //文件名字自己随便取</p>
+<ol start="3">
+<li>通过“Qt语言家”工具生成 第二步设置的 <code>.ts</code> 文件名字自己随便取</li>
+</ol>
+<p>具体方法点击<strong>QtCreator工具栏</strong>中依次步骤如下：</p>
+<p>&quot;工具&quot;-&gt;&quot;外部&quot;-&gt;&quot;Qt语言家&quot;-&gt;&quot;更新翻译(lupdate)&quot;</p>
+<p>操作完后<strong>会在项目文件夹中生成对应的ts文件</strong></p>
+<ol start="4">
+<li>打开 Linguist 工具（win10在侧边栏可以搜索得到），然后用 Linguist 工具打开刚才生成的ts文件，对需要翻译的地方进行翻译（tr()方法设置的字符串）</li>
+</ol>
+<p>设置好翻译后 保存 ，然后 发布，发布后会在<code>.ts</code>文件的路径下生成<code>.qm</code>文件。</p>
+<figure data-type="image" tabindex="1"><img src="https://starryskygit.github.io/post-images/1719738124934.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://starryskygit.github.io/post-images/1719738134579.png" alt="" loading="lazy"></figure>
+<ol start="5">
+<li>发布后，我们就生成了两个.qm文件了，将qm文件添加到项目资源文件中（添加方法跟添加图片类似）</li>
+</ol>
+<figure data-type="image" tabindex="3"><img src="https://starryskygit.github.io/post-images/1719738147300.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://starryskygit.github.io/post-images/1719738154380.png" alt="" loading="lazy"></figure>
+<ol start="6">
+<li>最后在需要引用的地方，调用资源文件.qm 进行翻译的切换。</li>
+</ol>
+<pre><code class="language-cpp">    QTranslator tl;//加载翻译文件的类
+
+    connect(EnglishPb, &amp;QAction::triggered,this,[=]()
+    {
+        tl.load(&quot;:/English.qm&quot;); //点击按钮后加载翻译文件
+        qApp-&gt;installTranslator(&amp;tl);
+        qDebug()&lt;&lt;&quot;English&quot;;
+
+    });
+    connect(ChinesePb, &amp;QAction::triggered,this,[=]()
+    {
+        tl.load(&quot;:/Chinese.qm&quot;);
+        qApp-&gt;installTranslator(&amp;tl);
+        qDebug()&lt;&lt;&quot;Chinese&quot;;
+
+    });
+</code></pre>
+<p>注：每次更新了tr()中的字符串都要更新一次qm文件。</p>
+<p>具体操作可参考：<br>
+https://blog.csdn.net/weixin_52764460/article/details/119040216</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://starryskygit.github.io/tag/zZwK4SEh1/" class="tag">
+                    语言切换
+                  </a>
+                
+                  <a href="https://starryskygit.github.io/tag/_kn05mRoR/" class="tag">
+                    QT
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://starryskygit.github.io/post/linux-jing-tai-ku-he-dong-tai-ku-de-zhi-zuo-he-shi-yong-_-jian-dan-jiao-cheng/">
+                  <h3 class="post-title">
+                    Linux 静态库和动态库的制作和使用_简单教程
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
